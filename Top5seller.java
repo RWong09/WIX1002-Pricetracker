@@ -1,4 +1,6 @@
-package org.example;
+
+package CSV;
+
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -11,7 +13,7 @@ public class Top5seller {
 
     public static void main(String[] args) {
         // JDBC database URL, username, and password of MySQL server
-        String url = "jdbc:mysql://127.0.0.1:3306/csv";
+        String url = "jdbc:mysql://localhost:3306/csv";
         String user = "root";
         String password = "";
 
@@ -33,7 +35,17 @@ public class Top5seller {
                  count_item = checkItemName.getInt(1);}
             ResultSet ItemCode;
             if(count_item>1)
-            {    System.out.println("There are multiple items with the same name. Enter the unit:");
+            {   String unitQuery = "SELECT unit FROM lookup_item WHERE item = ? ";
+                PreparedStatement displayunit = sqlconnection.prepareStatement(unitQuery);
+                displayunit.setString(1, item_input);
+                ResultSet DisplayUnit =displayunit.executeQuery();
+                int i=1;
+                while(DisplayUnit.next()) {
+                    String unit = DisplayUnit.getString("unit");
+                    System.out.println(i++ +") "+unit);
+
+                }
+                System.out.println("There are multiple items with the same name. Enter the unit:");
             String unit_input = sc.nextLine();
                 String itemCodeQuery2 = "SELECT item_code FROM lookup_item WHERE item = ? AND unit = ?";
                 PreparedStatement CheckItemCode2 = sqlconnection.prepareStatement(itemCodeQuery2);
