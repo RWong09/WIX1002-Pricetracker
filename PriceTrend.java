@@ -1,4 +1,5 @@
 
+import com.formdev.flatlaf.FlatDarkLaf;
 import java.awt.Color;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -6,8 +7,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+//import java.time.LocalDate;
+//import java.time.format.DateTimeFormatter;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -18,18 +19,36 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.category.CategoryDataset;
 
+import com.raven.datechooser.DateChooser;
+import com.formdev.flatlaf.FlatIntelliJLaf;
+import com.raven.datechooser.DateBetween;
+import com.raven.datechooser.listener.DateChooserAction;
+import com.raven.datechooser.listener.DateChooserAdapter;
+import java.text.SimpleDateFormat;
+
 public class PriceTrend extends javax.swing.JFrame {
 
     private CategoryDataset pricedata;
-
+    private DateChooser Pricedays=new DateChooser();
     /**
      * Creates new form PriceTrend
      */
     public PriceTrend() {
         initComponents();
-
-    }
-
+        Pricedays.setTextField(Startingdate);
+        
+        Pricedays.setDateSelectionMode(DateChooser.DateSelectionMode.BETWEEN_DATE_SELECTED);
+        Pricedays.setSelectedDateBetween(1, 8, 2023, 29, 8, 2023);
+        Pricedays.setLabelCurrentDayVisible(false);
+        Pricedays.addActionDateChooserListener(new DateChooserAdapter(){
+            @Override    
+            public void dateBetweenChanged(DateBetween date, DateChooserAction action){
+                SimpleDateFormat FormatY=new SimpleDateFormat("yyyy-MM-dd");
+                String Firstday=FormatY.format(date.getFromDate());
+                String Lastday=FormatY.format(date.getToDate());
+                showChart(Firstday,Lastday);
+                }
+                });}
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -40,28 +59,16 @@ public class PriceTrend extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel2 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
         Pricechart = new javax.swing.JPanel();
         Startingdate = new javax.swing.JTextField();
         jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
         jTextField3 = new javax.swing.JTextField();
-        Spinner = new javax.swing.JSpinner();
         jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.LINE_AXIS));
 
         jPanel2.setBackground(new java.awt.Color(255, 153, 153));
-
-        jButton1.setBackground(new java.awt.Color(255, 153, 153));
-        jButton1.setText("Show Chart");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
 
         Pricechart.setBackground(new java.awt.Color(255, 204, 204));
         Pricechart.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Price Trend", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.TOP));
@@ -77,15 +84,10 @@ public class PriceTrend extends javax.swing.JFrame {
 
         jTextField1.setText("jTextField1");
 
-        jTextField2.setText("jTextField2");
-
         jTextField3.setText("jTextField3");
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel3.setText("Date:");
-
-        jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel4.setText("Total Days:");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -94,17 +96,10 @@ public class PriceTrend extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jButton1))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(25, 25, 25)
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(Startingdate, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(54, 54, 54)
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(Spinner, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(Startingdate, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(Pricechart, javax.swing.GroupLayout.PREFERRED_SIZE, 1178, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -113,11 +108,6 @@ public class PriceTrend extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createSequentialGroup()
                     .addGap(0, 0, Short.MAX_VALUE)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
-            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel2Layout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGap(0, 0, Short.MAX_VALUE)))
             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel2Layout.createSequentialGroup()
@@ -131,23 +121,14 @@ public class PriceTrend extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(Startingdate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(Spinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4))
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(3, 3, 3)
                 .addComponent(Pricechart, javax.swing.GroupLayout.DEFAULT_SIZE, 514, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
-                .addComponent(jButton1)
-                .addContainerGap())
+                .addGap(47, 47, 47))
             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel2Layout.createSequentialGroup()
                     .addGap(0, 0, Short.MAX_VALUE)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
-            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel2Layout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGap(0, 0, Short.MAX_VALUE)))
             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel2Layout.createSequentialGroup()
@@ -160,12 +141,7 @@ public class PriceTrend extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        showChart();
-
-    }//GEN-LAST:event_jButton1ActionPerformed
-    public void showChart() {
+    public void showChart(String Firstday,String Lastday) {
         String url = "jdbc:mysql://127.0.0.1:3306/pricetracker";
         String user = "root";
         String password = "";
@@ -173,106 +149,90 @@ public class PriceTrend extends javax.swing.JFrame {
         DefaultCategoryDataset pricedata = new DefaultCategoryDataset();
         double min = 9999, max = 0, buffer = 0.02;
 
-//    try (Connection sqlconnection = DriverManager.getConnection(url, user, password)) {
-//        int itemCode = 2;
-//        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-//        LocalDate localDate = LocalDate.parse(Startingdate.getText(), dateFormatter);
+
+//        try (Connection sqlconnection = DriverManager.getConnection(url, user, password)) {
+//            int itemCode = 2;
+//            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+//            LocalDate localDate = LocalDate.parse(Startingdate.getText(), dateFormatter);
 //
-//        String currentdate_price = "SELECT price FROM pricecatcher WHERE date=? AND item_code=?";
-//        String countItem = "SELECT COUNT(item_code) FROM pricecatcher WHERE date=? AND item_code=? ";
+//            String avgquery = "SELECT ROUND(AVG(price), 2) AS avg "
+//                    + "FROM pricecatcher "
+//                    + "WHERE date=? "
+//                    + "AND item_code = ?;";
 //
-//        try (PreparedStatement currentprice = sqlconnection.prepareStatement(currentdate_price);
-//             PreparedStatement count_Item = sqlconnection.prepareStatement(countItem)) {
+//            try (PreparedStatement AVG = sqlconnection.prepareStatement(avgquery)) {
+//                double avg=0 ;
+//                int loopCounter = 1;
+//                int Countdays = (int) Spinner.getValue();
+//                while (loopCounter <= Countdays) {
+//                    AVG.setDate(1, java.sql.Date.valueOf(localDate));
+//                    AVG.setInt(2, itemCode);
+//                    ResultSet Avg = AVG.executeQuery();
 //
-//            int loopCounter = 1;
-//            //int Countdays = Integer.parseInt(Totaldays.getText()); 
-//            int Countdays=(int) Spinner.getValue();
-//            while (loopCounter <= Countdays) {
-//                currentprice.setDate(1, java.sql.Date.valueOf(localDate));
-//                currentprice.setInt(2, itemCode);
-//                ResultSet currentPrice = currentprice.executeQuery();
+//                    while (Avg.next()) {
+//                        avg = Avg.getDouble("avg");
+//                    }
 //
-//                count_Item.setDate(1, java.sql.Date.valueOf(localDate));
-//                count_Item.setInt(2, itemCode);
-//                ResultSet CountItem = count_Item.executeQuery();
 //
-//                int countitem = 0;
-//                if (CountItem.next()) {
-//                    countitem = CountItem.getInt(1);
+//                    System.out.println(loopCounter+"avg:"+avg);
+//                    if (avg < min) {
+//                        min = avg;
+//                        System.out.println("min:"+min);
+//                    }
+//                    if (avg > max) {
+//                        max = avg;
+//                        System.out.println("max:"+max);
+//                    }
+//                    pricedata.addValue(avg, "price for " + localDate, localDate.toString());
+//                    localDate = localDate.plusDays(1);
+//                    loopCounter++;
 //                }
-//                System.out.println("countitem: " + countitem);
-//
-//                double totalprice = 0;
-//                while (currentPrice.next()) {
-//                    double price = currentPrice.getDouble("price");
-//                    totalprice += price;
-//                }
-//
-//                DecimalFormat decimalFormat = new DecimalFormat("#.00");
-//                double avg = totalprice / countitem * 1.0;
-//                String AVG = decimalFormat.format(avg);
-//                double Avg = Double.parseDouble(AVG);
-//                if(Avg<min){
-//                min=Avg;
-//                }
-//                if(Avg>max){
-//                    max=Avg;
-//                }
-//                System.out.println(loopCounter+"round " + Avg);
-//                System.out.println("min"+min);
-//                System.out.println("max"+max);
-//
-//                pricedata.addValue(Avg, "price for " + localDate, localDate.toString());
-//                localDate = localDate.plusDays(1);
-//                loopCounter++;
 //            }
+//        } catch (SQLException ex) {
+//            ex.printStackTrace(System.out);
 //        }
-//    } catch (SQLException ex) {
-//        ex.printStackTrace(System.out);
-//    }
-        try (Connection sqlconnection = DriverManager.getConnection(url, user, password)) {
-            int itemCode = 2;
-            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            LocalDate localDate = LocalDate.parse(Startingdate.getText(), dateFormatter);
+try (Connection sqlconnection = DriverManager.getConnection(url, user, password)) {
+    int itemCode = 2;
+ //   DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+ //   LocalDate localDate = LocalDate.parse(Startingdate.getText(), dateFormatter);
 
-            String avgquery = "SELECT ROUND(AVG(price), 2) AS avg "
-                    + "FROM pricecatcher "
-                    + "WHERE date=? "
-                    + "AND item_code = ?;";
+    String avgquery = "SELECT date, ROUND(AVG(price), 2) AS avg " +
+            "FROM pricecatcher " +
+            "WHERE date BETWEEN ? AND ? " +
+            "AND item_code = ? " +
+            "GROUP BY date;";
 
-            try (PreparedStatement AVG = sqlconnection.prepareStatement(avgquery)) {
-                double avg=0 ;
-                int loopCounter = 1;
-                int Countdays = (int) Spinner.getValue();
-                while (loopCounter <= Countdays) {
-                    AVG.setDate(1, java.sql.Date.valueOf(localDate));
-                    AVG.setInt(2, itemCode);
-                    ResultSet Avg = AVG.executeQuery();
+    try (PreparedStatement AVG = sqlconnection.prepareStatement(avgquery)) {
+        AVG.setInt(3, itemCode); // Set item code once outside the loop
+//        int Countdays = (int) Spinner.getValue();
+//        LocalDate endDate = localDate.plusDays(Countdays - 1);
+//        AVG.setDate(1, java.sql.Date.valueOf(localDate));
+//        AVG.setDate(2, java.sql.Date.valueOf(endDate));
+        AVG.setString(1, Firstday);
+        AVG.setString(2, Lastday);
 
-                    while (Avg.next()) {
-                        avg = Avg.getDouble("avg");
-                    }
+        try (ResultSet Avg = AVG.executeQuery()) {
+            while (Avg.next()) {
+                double avg = Avg.getDouble("avg");
+                //LocalDate resultDate = Avg.getDate("date").toLocalDate();
+                String date=Avg.getString("date");
 
-//                    DecimalFormat decimalFormat = new DecimalFormat("#.00");
-//                    String avgString = decimalFormat.format(avgDouble);
-//                    double avg = Double.parseDouble(avgString);
-                    System.out.println(loopCounter+"avg:"+avg);
-                    if (avg < min) {
-                        min = avg;
-                        System.out.println("min:"+min);
-                    }
-                    if (avg > max) {
-                        max = avg;
-                        System.out.println("max:"+max);
-                    }
-                    pricedata.addValue(avg, "price for " + localDate, localDate.toString());
-                    localDate = localDate.plusDays(1);
-                    loopCounter++;
+                System.out.println(date + " avg:" + avg);
+
+                if (avg < min) {
+                    min = avg;
+                    System.out.println("min:" + min);
                 }
+                if (avg > max) {
+                    max = avg;
+                    System.out.println("max:" + max);
+                }
+                pricedata.addValue(avg, "price for " + date, date);
             }
-        } catch (SQLException ex) {
-            ex.printStackTrace(System.out);
         }
+    }
+}catch(SQLException e)
+{e.printStackTrace();}
 
         JFreeChart jchart = ChartFactory.createBarChart("Price trend", "Date", "Price", pricedata,
                 PlotOrientation.HORIZONTAL, true, true, false);
@@ -285,14 +245,7 @@ public class PriceTrend extends javax.swing.JFrame {
         ChartPanel chartPanel = new ChartPanel(jchart);
         chartPanel.setPreferredSize(new java.awt.Dimension(1170, 500));
 
-//        ChartFrame chartFrm = new ChartFrame("pt", jchart, true);
-//        chartFrm.setVisible(true);
-//        chartFrm.setSize(500, 400);
-//        JFrame frame = new JFrame("Price Trend Chart");
-//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        frame.getContentPane().add(chartPanel);
-//        frame.pack();
-//        frame.setVisible(true);
+
         Pricechart.removeAll();
         Pricechart.add(chartPanel);
         Pricechart.updateUI();
@@ -329,7 +282,7 @@ public class PriceTrend extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(PriceTrend.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-
+        //FlatDarkLaf.setup();
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -340,14 +293,10 @@ public class PriceTrend extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel Pricechart;
-    private javax.swing.JSpinner Spinner;
     private javax.swing.JTextField Startingdate;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
     // End of variables declaration//GEN-END:variables
 }
