@@ -1,394 +1,439 @@
+package loginregister;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.sql.PreparedStatement;
 
-public class Browser {
+public class Browser extends javax.swing.JFrame {
 
-    public static void main(String[] args) {
-        String url = "jdbc:mysql://localhost:3306/pricetable";
+    private String Username;
+    private String item;
+    private String unit;
+    private String url = "jdbc:mysql://localhost:3306/pricetracker";
+    private String user = "root";
+    private String password = "";
+
+    Browser(String Username) {
+        initComponents();
+        this.Username = Username;
+        USER.setText(Username);
+    }
+
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jPanel1 = new javax.swing.JPanel();
+        Menu = new javax.swing.JPanel();
+        USER = new javax.swing.JLabel();
+        Browse = new javax.swing.JButton();
+        Shopping = new javax.swing.JButton();
+        Account = new javax.swing.JButton();
+        Logout = new javax.swing.JButton();
+        Welcome = new javax.swing.JLabel();
+        BrowseByCat = new javax.swing.JLabel();
+        Category = new javax.swing.JLabel();
+        SubCategory = new javax.swing.JLabel();
+        Cat = new javax.swing.JComboBox<>();
+
+        String url = "jdbc:mysql://localhost:3306/pricetracker";
         String user = "root";
         String password = "";
-
         try {
-            // Establish a connection
             Connection sqlconnection = DriverManager.getConnection(url, user, password);
 
-            Scanner sc = new Scanner(System.in);
-
-            System.out.println("PriceTracker - Track Prices with Ease");
-            System.out.println("Welcome to Product Search and Selection\n");
-            System.out.println(
-                    "1. Import Data\n2. Browse by Categories\n3. Search for a Product\n4. View Shopping cart\n5. Account Setting\n6. Exit\n");
-            System.out.print("Enter your choice (1/2/3/4/5/6) : ");
-            int firstChoice = sc.nextInt();
-            System.out.println("");
-            int i = 0;
-            // need to add problem shooting to prevent invalid input
-
-            switch (firstChoice) {
-                case 1:
-                    System.out.print("Number of data that wanted to be inserted : ");
-                    int numberOfDataInserted = sc.nextInt();
-                    while (i < numberOfDataInserted) {
-                        System.out.print("Premise Code : ");
-                        int newPremiseCode = sc.nextInt();
-                        System.out.print("Item Code : ");
-                        int newItemCode = sc.nextInt();
-                        sc.nextLine();
-                        System.out.print("Item Name : ");
-                        String newItemName = sc.nextLine();
-                        System.out.print("Unit : ");
-                        String newUnit = sc.nextLine();
-                        System.out.print("Item Group : ");
-                        String newItemGroup = sc.nextLine();
-                        System.out.print("Item Category : ");
-                        String newItemCategory = sc.nextLine();
-                        System.out.print("Premise Name : ");
-                        String newPremiseName = sc.nextLine();
-                        System.out.print("Address : ");
-                        String newAddress = sc.nextLine();
-                        System.out.print("Premise Type : ");
-                        String newPremiseType = sc.nextLine();
-                        System.out.print("State : ");
-                        String newState = sc.nextLine();
-                        System.out.print("District : ");
-                        String newDistrict = sc.nextLine();
-                        System.out.print("Date[YYYY-MM-DD] : ");
-                        String newDate = sc.nextLine();
-                        System.out.print("Price : ");
-                        Double newPrice = sc.nextDouble();
-
-                        String importDataSQLItem = "INSERT INTO lookup_item(item_code, item, unit, item_group, item_category) VALUES (?, ?, ?, ?, ?)";
-                        PreparedStatement importDataItem = sqlconnection.prepareStatement(importDataSQLItem);
-                        importDataItem.setInt(1, newItemCode);
-                        importDataItem.setString(2, newItemName);
-                        importDataItem.setString(3, newUnit);
-                        importDataItem.setString(4, newItemGroup);
-                        importDataItem.setString(5, newItemCategory);
-
-                        int rowsAffectedItem = importDataItem.executeUpdate();
-
-                        // Insert data into lookup_premise table
-                        String importDataSQLPremise = "INSERT INTO lookup_premise(premise_code, address, premise_type, state, district) VALUES (?, ?, ?, ?, ?)";
-                        PreparedStatement importDataPremise = sqlconnection.prepareStatement(importDataSQLPremise);
-                        importDataPremise.setInt(1, newPremiseCode);
-                        importDataPremise.setString(2, newAddress);
-                        importDataPremise.setString(3, newPremiseType);
-                        importDataPremise.setString(4, newState);
-                        importDataPremise.setString(5, newDistrict);
-
-                        int rowsAffectedPremise = importDataPremise.executeUpdate();
-
-                        // Insert data into pricecatcher table
-                        String importDataSQLPriceCatcher = "INSERT INTO pricecatcher(item_code, premise_code, date, price) VALUES (?, ?, ?, ?)";
-                        PreparedStatement importDataPriceCatcher = sqlconnection
-                                .prepareStatement(importDataSQLPriceCatcher);
-                        importDataPriceCatcher.setInt(1, newItemCode);
-                        importDataPriceCatcher.setInt(2, newPremiseCode);
-                        importDataPriceCatcher.setString(3, newDate);
-                        importDataPriceCatcher.setDouble(4, newPrice);
-
-                        int rowsAffectedPriceCatcher = importDataPriceCatcher.executeUpdate();
-
-                        if (rowsAffectedItem > 0 && rowsAffectedPremise > 0 && rowsAffectedPriceCatcher > 0) {
-                            System.out.println("Data added successfully to all tables!");
-                        } else {
-                            System.out.println("Failed to add data.");
-                        }
-
-                        importDataItem.close();
-                        importDataPremise.close();
-                        importDataPriceCatcher.close();
-                    }
-                    break;
-                case 2:
-                    System.out.println("Select a Category : \n");
-                    // Query to get the count of distinct item groups
-                    String categoryNumQuery = "SELECT COUNT(DISTINCT item_group) AS count_item_groups FROM lookup_item";
-                    PreparedStatement categoryNumStatement = sqlconnection.prepareStatement(categoryNumQuery);
-                    ResultSet categoryNumResult = categoryNumStatement.executeQuery();
-
-                    int catNum = 0;
-
-                    if (categoryNumResult.next()) {
-                        catNum = categoryNumResult.getInt("count_item_groups");
-                    }
-
-                    // Query to get distinct item groups
-                    String categoryQuery = "SELECT DISTINCT item_group FROM lookup_item";
-                    PreparedStatement categoryStatement = sqlconnection.prepareStatement(categoryQuery);
-                    ResultSet categoryResult = categoryStatement.executeQuery();
-                    Map<Integer, String> categoryMap = new HashMap<>();
-
-                    int j = 1; // Initialize j before using it in the loop
-                    while (categoryResult.next()) {
-                        String category = categoryResult.getString("item_group");
-                        categoryMap.put(j, category);
-                        System.out.println(j++ + ". " + category);
-                    }
-                    System.out.println((catNum + 1) + ". Back to Main Menu\n");
-
-                    // select sub category
-                    System.out.print("Enter your choice : ");
-                    int categoryChoice = sc.nextInt();
-                    System.out.println("");
-
-                    if (categoryChoice == catNum + 1) {
-                        break;
-                    } else {
-                        // query to count number of different subcategory in a category
-                        String selectedCategory = categoryMap.get(categoryChoice);
-                        String subCategoryNumQuery = "SELECT COUNT(DISTINCT item_category) AS count_item_category FROM lookup_item WHERE item_group = ?;";
-                        PreparedStatement subCategoryNumStatement = sqlconnection.prepareStatement(subCategoryNumQuery);
-                        subCategoryNumStatement.setString(1, selectedCategory);
-                        ResultSet subCategoryNumResult = subCategoryNumStatement.executeQuery();
-
-                        int subCatNum = 0;
-                        if (subCategoryNumResult.next()) {
-                            subCatNum = subCategoryNumResult.getInt("count_item_category");
-                        }
-
-                        // query to print all sub category of a category
-                        String subCategoryQuery = "SELECT DISTINCT item_category FROM lookup_item WHERE item_group = ?;";
-                        PreparedStatement subCategoryStatement = sqlconnection.prepareStatement(subCategoryQuery);
-                        subCategoryStatement.setString(1, selectedCategory);
-                        ResultSet subCategoryResult = subCategoryStatement.executeQuery();
-
-                        Map<Integer, String> subCategoryMap = new HashMap<>();
-
-                        int k = 1;
-                        while (subCategoryResult.next()) {
-                            String subCategory = subCategoryResult.getString("item_category");
-                            subCategoryMap.put(k, subCategory);
-                            System.out.println(k++ + ". " + subCategory);
-                        }
-                        System.out.println(subCatNum + 1 + ". Back to Main Menu\n");
-
-                        // select item from subcategory
-                        System.out.print("Enter your choice : ");
-                        int subCatChoice = sc.nextInt();
-                        System.out.println("");
-                        if (subCatChoice == subCatNum + 1) {
-                            break;
-                        } else {
-                            // query to get number of item in the subcategory
-                            String selectedSubCategory = subCategoryMap.get(subCatChoice);
-                            String itemNumInSubCat = "SELECT COUNT(DISTINCT item) AS count_item FROM lookup_item WHERE item_category = ?;";
-                            PreparedStatement itemNumInSubCatStatement = sqlconnection
-                                    .prepareStatement(itemNumInSubCat);
-                            itemNumInSubCatStatement.setString(1, selectedSubCategory);
-                            ResultSet itemNumInSubCatResult = itemNumInSubCatStatement.executeQuery();
-
-                            int itemInSubCatNum = 0;
-                            if (itemNumInSubCatResult.next()) {
-                                itemInSubCatNum = itemNumInSubCatResult.getInt("count_item");
-                            }
-
-                            // query to get all the item from the same sub category
-                            String itemFromSameSubCat = "SELECT DISTINCT item FROM lookup_item WHERE item_category = ?;";
-                            PreparedStatement itemFromSameSubCatStatement = sqlconnection
-                                    .prepareStatement(itemFromSameSubCat);
-                            itemFromSameSubCatStatement.setString(1, selectedSubCategory);
-                            ResultSet itemFromSameSubCatResult = itemFromSameSubCatStatement.executeQuery();
-
-                            Map<Integer, String> itemMap = new HashMap<>();
-                            int a = 1;
-                            while (itemFromSameSubCatResult.next()) {
-                                String itemFromSubCat = itemFromSameSubCatResult.getString("item");
-                                itemMap.put(a, itemFromSubCat);
-                                System.out.println(a++ + ". " + itemFromSubCat);
-                            }
-                            System.out.print(itemInSubCatNum + 1 + ". Back to Main Menu\n");
-
-                            System.out.print("Enter your choice : ");
-                            int itemChoice = sc.nextInt();
-                            System.out.println("");
-
-                            if (itemChoice == itemInSubCatNum + 1) {
-                                break;
-                            } else {
-                                String itemSelected = itemMap.get(itemChoice);
-                                System.out.printf("Selected %s\n", itemSelected);
-
-                                // query to count number of item_code for item with same name
-                      String itemNumWithSameName = "SELECT COUNT(DISTINCT unit) AS count_item_unit FROM lookup_item WHERE item = ?";
-                        PreparedStatement itemNumWithSameNameStatement = sqlconnection.prepareStatement(itemNumWithSameName);
-                        itemNumWithSameNameStatement.setString(1, itemSelected);
-                        ResultSet itemNumWithSameNameResult = itemNumWithSameNameStatement.executeQuery();
-                        int numOfDiffUnit = 0;
-                        if (itemNumWithSameNameResult.next()) {
-                            numOfDiffUnit = itemNumWithSameNameResult.getInt("count_item_unit");
-                        }
-
-                        String currentUnit = null;
-                        if (numOfDiffUnit == 1) {
-                            String currentUnitQuery = "SELECT `unit` FROM `lookup_item` WHERE `item` = ?";
-                            PreparedStatement currentUnitStatement = sqlconnection.prepareStatement(currentUnitQuery);
-                            currentUnitStatement.setString(1, itemSelected);
-                            ResultSet currentUnitResult = currentUnitStatement.executeQuery();
-                            if (currentUnitResult.next()) {
-                                currentUnit = currentUnitResult.getString("unit");
-                            }
-                            
-                        } else if (numOfDiffUnit > 1) {
-                            String MultipleCurrentUnitQuery = "SELECT DISTINCT `unit` FROM `lookup_item` WHERE `item` = ?";
-                            PreparedStatement MultipleCurrentUnitStatement = sqlconnection.prepareStatement(MultipleCurrentUnitQuery);
-                            MultipleCurrentUnitStatement.setString(1, itemSelected);
-                            ResultSet MultipleCurrentUnitResult = MultipleCurrentUnitStatement.executeQuery();
-                            int z = 1;
-                            Map<Integer, String> MultipleCurrentUnitMap = new HashMap<>();
-                            while (MultipleCurrentUnitResult.next()) {
-                                currentUnit = MultipleCurrentUnitResult.getString("unit");
-                                MultipleCurrentUnitMap.put(z, currentUnit);
-                                System.out.println(z++ + ". " + currentUnit);
-                            }
-                            System.out.print("Enter Your Choice : ");
-                            int MultipleCurrentUnitChoice = sc.nextInt();
-                            System.out.println();
-                            currentUnit = MultipleCurrentUnitMap.get(MultipleCurrentUnitChoice);
-
-                        }
-
-                                System.out.println(
-                                        "Select Action :\n1. View item details\n2. Modify item Details\n3. View top 5 cheapest seller\n4. View price trend\n5. Add to shopping cart");
-                                System.out.print("Enter Your Choice : ");
-                                int nextStepAfterGetItem = sc.nextInt();
-                                switch (nextStepAfterGetItem) {
-                                    case 1:
-
-                                        break;
-
-                                    case 2:
-                                        modifyItemDetails(itemSelected, currentUnit);
-                                        break;
-                                    default:
-                                        break;
-                                }
-                            }
-
-                        }
-                    }
-
-                    break;
-                case 3:
-                    break;
+            // Query to get distinct item groups
+            String categoryQuery = "SELECT DISTINCT item_group FROM lookup_item";
+            PreparedStatement categoryStatement = sqlconnection.prepareStatement(categoryQuery);
+            ResultSet categoryResult = categoryStatement.executeQuery();
+            while (categoryResult.next()) {
+                Cat.addItem(categoryResult.getString("item_group"));
             }
-        } // Take user input for the item
-        catch (SQLException e) {
-            System.out.println("Error : " + e.getMessage());
+
+        } catch (Exception e) {
+            System.out.println("Error!" + e.getMessage());
         }
+        SubCat = new javax.swing.JComboBox<>();
+        Next = new javax.swing.JButton();
+        Back = new javax.swing.JButton();
+        ITEM = new javax.swing.JLabel();
+        Item = new javax.swing.JComboBox<>();
+        UNIT = new javax.swing.JLabel();
+        Unit = new javax.swing.JComboBox<>();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+
+        jPanel1.setBackground(new java.awt.Color(255, 204, 204));
+        jPanel1.setMinimumSize(new java.awt.Dimension(900, 500));
+        jPanel1.setPreferredSize(new java.awt.Dimension(1000, 500));
+
+        Menu.setBackground(new java.awt.Color(255, 153, 153));
+
+        USER.setText("jLabel1");
+
+        Browse.setBackground(new java.awt.Color(255, 153, 153));
+        Browse.setText("Browse by Categories");
+        Browse.setBorderPainted(false);
+
+        Shopping.setBackground(new java.awt.Color(255, 153, 153));
+        Shopping.setText("Shopping Cart");
+        Shopping.setBorderPainted(false);
+        Shopping.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ShoppingActionPerformed(evt);
+            }
+        });
+
+        Account.setBackground(new java.awt.Color(255, 153, 153));
+        Account.setText("Account Setting");
+        Account.setBorderPainted(false);
+        Account.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AccountActionPerformed(evt);
+            }
+        });
+
+        Logout.setBackground(new java.awt.Color(255, 153, 153));
+        Logout.setText("Log Out");
+        Logout.setBorderPainted(false);
+        Logout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                LogoutActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout MenuLayout = new javax.swing.GroupLayout(Menu);
+        Menu.setLayout(MenuLayout);
+        MenuLayout.setHorizontalGroup(
+            MenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(MenuLayout.createSequentialGroup()
+                .addGroup(MenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(MenuLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(MenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(USER, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(MenuLayout.createSequentialGroup()
+                                .addGroup(MenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(Browse, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(Shopping, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(Account, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(10, 10, 10))))
+                    .addGroup(MenuLayout.createSequentialGroup()
+                        .addGap(35, 35, 35)
+                        .addComponent(Logout, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        MenuLayout.setVerticalGroup(
+            MenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(MenuLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(USER, javax.swing.GroupLayout.DEFAULT_SIZE, 43, Short.MAX_VALUE)
+                .addGap(25, 25, 25)
+                .addComponent(Browse, javax.swing.GroupLayout.DEFAULT_SIZE, 42, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(Shopping, javax.swing.GroupLayout.DEFAULT_SIZE, 43, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(Account, javax.swing.GroupLayout.DEFAULT_SIZE, 43, Short.MAX_VALUE)
+                .addGap(236, 236, 236)
+                .addComponent(Logout, javax.swing.GroupLayout.DEFAULT_SIZE, 43, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        Welcome.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        Welcome.setText("  Welcome to Product Search and Selection");
+
+        BrowseByCat.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        BrowseByCat.setText("Browse by Categories");
+
+        Category.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        Category.setText("Select a Categories:");
+
+        SubCategory.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        SubCategory.setText("Select a Sub Categories:");
+
+        Cat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CatActionPerformed(evt);
+            }
+        });
+
+        SubCat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SubCatActionPerformed(evt);
+            }
+        });
+
+        Next.setText("Next >>");
+        Next.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                NextActionPerformed(evt);
+            }
+        });
+
+        Back.setText("<< Back");
+        Back.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BackActionPerformed(evt);
+            }
+        });
+
+        ITEM.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        ITEM.setText("Item:");
+
+        Item.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ItemActionPerformed(evt);
+            }
+        });
+
+        UNIT.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        UNIT.setText("Unit:");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(Menu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(22, 22, 22)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(ITEM, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(UNIT, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(Unit, 0, 647, Short.MAX_VALUE)
+                                    .addComponent(Item, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(Category, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(SubCategory, javax.swing.GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE))
+                                .addGap(7, 7, 7)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(SubCat, 0, 647, Short.MAX_VALUE)
+                                    .addComponent(Cat, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addGap(30, 30, 30))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 314, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(Next, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(298, 298, 298))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(Back)
+                                .addGap(31, 31, 31))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(BrowseByCat, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(304, 304, 304))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(Welcome)
+                                .addGap(227, 227, 227))))))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(Menu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(Welcome, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(BrowseByCat, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(Cat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Category, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(SubCat, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE)
+                    .addComponent(SubCategory, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(ITEM)
+                    .addComponent(Item, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(14, 14, 14)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(Unit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(UNIT))
+                .addGap(18, 18, 18)
+                .addComponent(Next)
+                .addGap(152, 152, 152)
+                .addComponent(Back)
+                .addGap(19, 19, 19))
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void CatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CatActionPerformed
+        SubCat.removeAllItems();
+        Object selectedCategory = Cat.getSelectedItem();
+
+        // Check if an item is selected
+        try {
+            Connection sqlconnection = DriverManager.getConnection(url, user, password);
+            String Catquery = "SELECT DISTINCT item_category FROM lookup_item WHERE item_group = ?;";
+            PreparedStatement CatStatement = sqlconnection.prepareStatement(Catquery);
+            CatStatement.setObject(1, selectedCategory);
+            ResultSet itemGroup = CatStatement.executeQuery();
+
+            while (itemGroup.next()) {
+                SubCat.addItem(itemGroup.getString("item_category"));
+            }
+            
+        } catch (Exception e) {
+            System.out.println("Error!" + e.getMessage());
+        }
+//        updateSubCatComboBox(selectedCategory);
+
+    }//GEN-LAST:event_CatActionPerformed
+
+    private void SubCatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SubCatActionPerformed
+        Item.removeAllItems();
+        Object selectedSubCategory = SubCat.getSelectedItem();
+
+        try {
+            Connection sqlconnection = DriverManager.getConnection(url, user, password);
+            String itemFromSameSubCat = "SELECT DISTINCT item FROM lookup_item WHERE item_category = ?;";
+            PreparedStatement itemFromSameSubCatStatement = sqlconnection.prepareStatement(itemFromSameSubCat);
+            itemFromSameSubCatStatement.setObject(1, selectedSubCategory);
+            ResultSet itemFromSameSubCatResult = itemFromSameSubCatStatement.executeQuery();
+            while (itemFromSameSubCatResult.next()) {
+                Item.addItem(itemFromSameSubCatResult.getString("item"));
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error!" + e.getMessage());
+        }
+    }//GEN-LAST:event_SubCatActionPerformed
+
+    private void NextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NextActionPerformed
+        item = (String) Item.getSelectedItem();
+        unit = (String) Unit.getSelectedItem();
+        UserItem Use = new UserItem(item, unit, this.Username);
+        Use.setVisible(true);
+        Use.pack();
+        Use.setLocationRelativeTo(null);
+        this.dispose();
+
+    }//GEN-LAST:event_NextActionPerformed
+
+    private void BackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackActionPerformed
+        Home HomeFrame = new Home(this.Username);
+        HomeFrame.setVisible(true);
+        HomeFrame.pack();
+        HomeFrame.setLocationRelativeTo(null);
+        this.dispose();
+    }//GEN-LAST:event_BackActionPerformed
+
+    private void ItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ItemActionPerformed
+        Unit.removeAllItems();
+        Object itemSelected = Item.getSelectedItem();
+
+        try {
+            Connection sqlconnection = DriverManager.getConnection(url, user, password);
+            String MultipleCurrentUnitQuery = "SELECT DISTINCT `unit` FROM `lookup_item` WHERE `item` = ?";
+            PreparedStatement MultipleCurrentUnitStatement = sqlconnection.prepareStatement(MultipleCurrentUnitQuery);
+            MultipleCurrentUnitStatement.setObject(1, itemSelected);
+            ResultSet MultipleCurrentUnitResult = MultipleCurrentUnitStatement.executeQuery();
+            while (MultipleCurrentUnitResult.next()) {
+                Unit.addItem(MultipleCurrentUnitResult.getString("unit"));
+            }
+        } catch (Exception e) {
+            System.out.println("Error!" + e.getMessage());
+        }
+    }//GEN-LAST:event_ItemActionPerformed
+
+    private void LogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LogoutActionPerformed
+        Login LoginFrame = new Login();
+        LoginFrame.setVisible(true);
+        LoginFrame.pack();
+        LoginFrame.setLocationRelativeTo(null);
+        this.dispose();
+    }//GEN-LAST:event_LogoutActionPerformed
+
+    private void AccountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AccountActionPerformed
+        AccSetting Acc = new AccSetting(this.Username);
+        Acc.setVisible(true);
+        Acc.pack();
+        Acc.setLocationRelativeTo(null);
+        this.dispose();
+    }//GEN-LAST:event_AccountActionPerformed
+
+    private void ShoppingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ShoppingActionPerformed
+        ShopCart Shop = new ShopCart(this.Username);
+        Shop.setVisible(true);
+        Shop.pack();
+        Shop.setLocationRelativeTo(null);
+        this.dispose();
+    }//GEN-LAST:event_ShoppingActionPerformed
+
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(Browser.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(Browser.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(Browser.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(Browser.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new Browser("T").setVisible(true);
+            }
+        });
     }
 
-    public static void modifyItemDetails(String itemSelected, String currentUnit) {
-        String url = "jdbc:mysql://localhost:3306/pricetable";
-        String user = "root";
-        String password = "";
-        try (Connection connection = DriverManager.getConnection(url, user, password)) {
-            System.out.println("Select which part to be modified : \n1. premise\n2. item\n3. price\n4. Delete item");
-            Scanner sc1 = new Scanner(System.in);
-            int thingToBeChange = sc1.nextInt();
-
-            switch (thingToBeChange) {
-                case 1:
-
-                    break;
-                case 2:
-                    // query to get item code of the item selected
-                    String itemCodeQuery = "SELECT `item_code` FROM `lookup_item` WHERE `item` = ? AND `unit` = ?;";
-                    PreparedStatement itemCodeStatement = connection.prepareStatement(itemCodeQuery);
-                    itemCodeStatement.setString(1, itemSelected);
-                    itemCodeStatement.setString(2, currentUnit);
-                    ResultSet itemCodeResult = itemCodeStatement.executeQuery();
-                    int itemCode = 0;
-                    if (itemCodeResult.next()) {
-                        itemCode = itemCodeResult.getInt("item_code");
-                    }
-
-                    System.out.println(
-                            "Thing to be modified in item : \n1. Item Name\n2. Unit\n3. Item Group\n4. Item Category");
-                    System.out.println("Enter Your Choice");
-                    int itemModification = sc1.nextInt();
-                    sc1.nextLine();
-
-                    
-
-                    // item Name Modification
-                    if (itemModification == 1) {
-                        System.out.print("Change " + itemSelected + " to : ");
-                        String newItemName = sc1.nextLine();
-                        String modifyingItemQuery = "UPDATE `lookup_item` SET `item` = ? WHERE `item_code` = ?;";
-                        PreparedStatement modifyingItemStatement = connection.prepareStatement(modifyingItemQuery);
-                        modifyingItemStatement.setString(1, newItemName);
-                        modifyingItemStatement.setInt(2, itemCode);
-                        int rowsAffected = modifyingItemStatement.executeUpdate();
-                        if (rowsAffected > 0) {
-                            System.out.println("Item updated successfully.");
-                        } else {
-                            System.out.println("No rows were updated. Item not found or no changes made.");
-                        }
-
-                    // item Unit modification
-                    } else if (itemModification == 2) {
-                        System.out.print("Change " + currentUnit + " to : ");
-                        String newItemUnit = sc1.nextLine();
-                        String modifyingItemUnitQuery = "UPDATE `lookup_item` SET `unit` = ? WHERE `item_code` = ?";
-                        PreparedStatement modifyingItemUnitStatement = connection.prepareStatement(modifyingItemUnitQuery);
-                        modifyingItemUnitStatement.setString(1, newItemUnit);
-                        modifyingItemUnitStatement.setInt(2, itemCode);
-                        int rowsAffected = modifyingItemUnitStatement.executeUpdate();
-                        if (rowsAffected > 0) {
-                            System.out.println("Item updated successfully.");
-                        } else {
-                            System.out.println("No rows were updated. Item not found or no changes made.");
-                        }
-
-                    //item Group Modification
-                    } else if (itemModification == 3) {
-                        //query to get item current group
-                        String currentItemGroupQuery = "SELECT `item_group` FROM `lookup` WHERE `item_code` = ?";
-                        PreparedStatement currentItemGroupStatement = connection.prepareStatement(currentItemGroupQuery);
-                        currentItemGroupStatement.setInt(1, itemCode);
-                        ResultSet currentItemGroupResult = currentItemGroupStatement.executeQuery();
-                        String currentItemGroup = null;
-                        if (currentItemGroupResult.next()){
-                            currentItemGroup = currentItemGroupResult.getString("item_group");
-                        }
-
-                        System.out.print("Change " + currentItemGroup + " to : ");
-                        String  newItemGroup = sc1.nextLine();
-                        String modifyingItemGroupQuery = "UPDATE `lookup_item` SET `item_group` = ? WHERE `item_code` = ?";
-                        PreparedStatement modifyingItemGroupStatement = connection.prepareStatement(modifyingItemGroupQuery);
-                        modifyingItemGroupStatement.setString(1, newItemGroup);
-                        modifyingItemGroupStatement.setInt(2, itemCode);
-                        int rowsAffected = modifyingItemGroupStatement.executeUpdate();
-                        if (rowsAffected > 0) {
-                            System.out.println("Item updated successfully.");
-                        } else {
-                            System.out.println("No rows were updated. Item not found or no changes made.");
-                        }
-
-                    //item Category Modification
-                    } else if (itemModification == 4) {
-                        //query to get item current category
-
-                    } else {
-                        System.out.println("Invalid input of item modification code");
-                    }
-                    break;
-                case 3:
-                    break;
-                default:
-                    System.out.println("Please enter a valid input");
-
-            }
-        } catch (SQLException e) {
-            System.out.println("Error : " + e.getMessage());
-        }
-    }
-
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton Account;
+    private javax.swing.JButton Back;
+    private javax.swing.JButton Browse;
+    private javax.swing.JLabel BrowseByCat;
+    private javax.swing.JComboBox<String> Cat;
+    private javax.swing.JLabel Category;
+    private javax.swing.JLabel ITEM;
+    private javax.swing.JComboBox<String> Item;
+    private javax.swing.JButton Logout;
+    private javax.swing.JPanel Menu;
+    private javax.swing.JButton Next;
+    private javax.swing.JButton Shopping;
+    private javax.swing.JComboBox<String> SubCat;
+    private javax.swing.JLabel SubCategory;
+    private javax.swing.JLabel UNIT;
+    private javax.swing.JLabel USER;
+    private javax.swing.JComboBox<String> Unit;
+    private javax.swing.JLabel Welcome;
+    private javax.swing.JPanel jPanel1;
+    // End of variables declaration//GEN-END:variables
 }

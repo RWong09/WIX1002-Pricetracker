@@ -7,7 +7,7 @@ import java.util.HashMap;
 
 public class PriceComparisonProgram {
     public static void main(String[] args) {
-        String url = "jdbc:mysql://localhost:3306/price";
+        String url = "jdbc:mysql://localhost:3306/pricetracker";
         String user = "root";
         String password = "";
 
