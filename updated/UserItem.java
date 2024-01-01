@@ -328,10 +328,10 @@ public class UserItem extends javax.swing.JFrame {
     }//GEN-LAST:event_Top5ActionPerformed
 
     private void BackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackActionPerformed
-        Home HomeFrame = new Home(Username);
-        HomeFrame.setVisible(true);
-        HomeFrame.pack();
-        HomeFrame.setLocationRelativeTo(null);
+        Browser Bro = new Browser(Username);
+        Bro.setVisible(true);
+        Bro.pack();
+        Bro.setLocationRelativeTo(null);
         this.dispose();
     }//GEN-LAST:event_BackActionPerformed
 

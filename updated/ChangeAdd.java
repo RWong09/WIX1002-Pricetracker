@@ -201,7 +201,8 @@ public class ChangeAdd extends javax.swing.JFrame {
                 if (rowsUpdated > 0 && delete > 0) {
                     showMessageDialog(null, "Update successful\nShopping cart is clear now","",JOptionPane.PLAIN_MESSAGE);
                 }
-
+                STATE.removeAllItems();
+                DISTRICT.removeAllItems();
             }
 
         } catch (SQLException e) {
