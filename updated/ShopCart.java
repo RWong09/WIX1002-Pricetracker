@@ -26,18 +26,18 @@ public class ShopCart extends javax.swing.JFrame {
         String password = "";
 
         try (Connection con = DriverManager.getConnection(url, user, password)) {
-            String query = "SELECT item, price FROM shopping_cart WHERE username = ?"; // Modify query according to your table structure
+            String query = "SELECT item, unit FROM shopping_cart WHERE username = ?"; // Modify query according to your table structure
             PreparedStatement pstmt = con.prepareStatement(query);
             pstmt.setString(1, Username);
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
                 String itemName = rs.getString("item");
-                double itemPrice = rs.getDouble("price");
+                String itemPrice = rs.getString("unit");
                 model.addRow(new Object[]{itemName, itemPrice});
             }
 
-            updateTotalPrice(); // Calculate and display total price after populating table
+//            updateTotalPrice(); // Calculate and display total price after populating table
         } catch (SQLException e) {
             e.printStackTrace(); // Handle SQL exception
         }

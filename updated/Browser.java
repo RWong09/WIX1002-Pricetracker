@@ -18,6 +18,7 @@ public class Browser extends javax.swing.JFrame {
         initComponents();
         this.Username = Username;
         USER.setText(Username);
+        Next.setEnabled(false);
     }
 
     @SuppressWarnings("unchecked")
@@ -125,6 +126,12 @@ public class Browser extends javax.swing.JFrame {
         UNIT.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         UNIT.setForeground(new java.awt.Color(255, 255, 255));
         UNIT.setText("Unit:");
+
+        Unit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                UnitActionPerformed(evt);
+            }
+        });
 
         Menu.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -418,6 +425,15 @@ public class Browser extends javax.swing.JFrame {
         HomeFrame.setLocationRelativeTo(null);
         this.dispose();
     }//GEN-LAST:event_HomeActionPerformed
+
+    private void UnitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UnitActionPerformed
+       switch (Unit.getSelectedIndex()) {
+            case 0 -> Next.setEnabled(true);
+            case 1 -> Next.setEnabled(true);
+            case 2 -> Next.setEnabled(true);
+            default -> Next.setEnabled(false);
+        }
+    }//GEN-LAST:event_UnitActionPerformed
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */

@@ -381,7 +381,7 @@ public class UserItem extends javax.swing.JFrame {
                 if (CountP.next()) {
                     int countpremise = CountP.getInt("numseller");
                     if (countpremise == 0) {
-                        showMessageDialog(null, "Sorry There are not " + item + " in your district.\nYou cannot add it.\nPlease Select other item", "Item Not Available", JOptionPane.WARNING_MESSAGE);
+                        showMessageDialog(null, "Sorry There are not " + item + " in your district (" + district + ").\nYou cannot add it.\nPlease Select other item", "Item Not Available", JOptionPane.WARNING_MESSAGE);
                     } else {
                         String insertitemQuery = "INSERT INTO shopping_cart "
                                 + "VALUES ('" + this.item + "' , '" + itemcode + "' , '" + unit + "' , '" + Username + "' );";
