@@ -61,7 +61,7 @@ public class UserItem extends javax.swing.JFrame {
         Top5 = new javax.swing.JButton();
         Trend = new javax.swing.JButton();
         AddToCart = new javax.swing.JButton();
-        Back = new javax.swing.JButton();
+        BackBrowse = new javax.swing.JButton();
         SelectedItem = new javax.swing.JLabel();
         ITEM = new javax.swing.JLabel();
         UNIT = new javax.swing.JLabel();
@@ -74,6 +74,7 @@ public class UserItem extends javax.swing.JFrame {
         Account = new javax.swing.JButton();
         Logout = new javax.swing.JButton();
         Home = new javax.swing.JButton();
+        BackHome = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -112,10 +113,11 @@ public class UserItem extends javax.swing.JFrame {
             }
         });
 
-        Back.setText("<< Back");
-        Back.addActionListener(new java.awt.event.ActionListener() {
+        BackBrowse.setText("<< Back to Browser");
+        BackBrowse.setDefaultCapable(false);
+        BackBrowse.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BackActionPerformed(evt);
+                BackBrowseActionPerformed(evt);
             }
         });
 
@@ -228,6 +230,13 @@ public class UserItem extends javax.swing.JFrame {
                 .addGap(18, 18, 18))
         );
 
+        BackHome.setText("<< Back to Home");
+        BackHome.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BackHomeActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -235,25 +244,9 @@ public class UserItem extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(Menu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(37, 37, 37)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(SelectedItem, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(ITEM, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(SelectedUnit)
-                                .addGap(18, 18, 18)
-                                .addComponent(UNIT, javax.swing.GroupLayout.PREFERRED_SIZE, 362, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE)))
-                        .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 304, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                .addComponent(Back)
-                                .addGap(30, 30, 30))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(Top5, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -264,7 +257,28 @@ public class UserItem extends javax.swing.JFrame {
                                 .addGap(327, 327, 327))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                                 .addComponent(Welcome)
-                                .addGap(299, 299, 299))))))
+                                .addGap(299, 299, 299))))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(37, 37, 37)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(SelectedItem, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(ITEM, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(SelectedUnit)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(UNIT, javax.swing.GroupLayout.PREFERRED_SIZE, 362, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(0, 0, Short.MAX_VALUE)))
+                                .addContainerGap())
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(BackBrowse, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
+                                    .addComponent(BackHome, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(24, 24, 24))))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -289,8 +303,10 @@ public class UserItem extends javax.swing.JFrame {
                 .addComponent(AddToCart)
                 .addGap(18, 18, 18)
                 .addComponent(Modify_Admin)
-                .addGap(80, 80, 80)
-                .addComponent(Back)
+                .addGap(41, 41, 41)
+                .addComponent(BackBrowse)
+                .addGap(18, 18, 18)
+                .addComponent(BackHome)
                 .addGap(23, 23, 23))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(Menu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -327,13 +343,13 @@ public class UserItem extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_Top5ActionPerformed
 
-    private void BackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackActionPerformed
+    private void BackBrowseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackBrowseActionPerformed
         Browser Bro = new Browser(Username);
         Bro.setVisible(true);
         Bro.pack();
         Bro.setLocationRelativeTo(null);
         this.dispose();
-    }//GEN-LAST:event_BackActionPerformed
+    }//GEN-LAST:event_BackBrowseActionPerformed
 
     private void TrendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TrendActionPerformed
         PriceTrend Pri = new PriceTrend(itemcode, item, unit, Username);
@@ -388,8 +404,8 @@ public class UserItem extends javax.swing.JFrame {
                         Statement insertitemstatement = sqlconnection.createStatement();
                         int Update = insertitemstatement.executeUpdate(insertitemQuery);
                         if (Update > 0) {
-                            showMessageDialog(null, "Add " + item + " successfully","Add item",JOptionPane.PLAIN_MESSAGE);
-                            
+                            showMessageDialog(null, "Add " + item + " successfully", "Add item", JOptionPane.PLAIN_MESSAGE);
+
                         }
                     }
                 }
@@ -439,10 +455,19 @@ public class UserItem extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_HomeActionPerformed
 
+    private void BackHomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackHomeActionPerformed
+        Home HomeFrame = new Home(Username);
+        HomeFrame.setVisible(true);
+        HomeFrame.pack();
+        HomeFrame.setLocationRelativeTo(null);
+        this.dispose();
+    }//GEN-LAST:event_BackHomeActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Account;
     private javax.swing.JButton AddToCart;
-    private javax.swing.JButton Back;
+    private javax.swing.JButton BackBrowse;
+    private javax.swing.JButton BackHome;
     private javax.swing.JButton BrowseByCat;
     private javax.swing.JButton Home;
     private javax.swing.JLabel ITEM;
