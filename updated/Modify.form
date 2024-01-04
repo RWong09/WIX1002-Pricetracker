@@ -72,10 +72,8 @@
                               <Group type="103" alignment="0" groupAlignment="0" max="-2" attributes="0">
                                   <Component id="item2" alignment="0" max="32767" attributes="0"/>
                                   <Component id="itemsubcat2" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
-                                      <Component id="itemcat2" alignment="0" max="32767" attributes="0"/>
-                                      <Component id="unit2" alignment="0" pref="78" max="32767" attributes="0"/>
-                                  </Group>
+                                  <Component id="itemcat2" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="unit2" alignment="0" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                           <EmptySpace min="-2" pref="33" max="-2" attributes="0"/>
@@ -225,7 +223,7 @@
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="ff" green="ff" red="ff" type="rgb"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Modify Item Detials"/>
+            <Property name="text" type="java.lang.String" value="Modify Item Details"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="item1">
@@ -280,7 +278,7 @@
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="ff" green="ff" red="ff" type="rgb"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="New Item Detials"/>
+            <Property name="text" type="java.lang.String" value="New Item Details"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="item2">

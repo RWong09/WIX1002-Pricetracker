@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.SQLException;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.showMessageDialog;
 
 public class Modify extends javax.swing.JFrame {
@@ -104,7 +106,7 @@ public class Modify extends javax.swing.JFrame {
 
         Modify.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         Modify.setForeground(new java.awt.Color(255, 255, 255));
-        Modify.setText("Modify Item Detials");
+        Modify.setText("Modify Item Details");
 
         item1.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         item1.setForeground(new java.awt.Color(255, 255, 255));
@@ -124,7 +126,7 @@ public class Modify extends javax.swing.JFrame {
 
         New.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         New.setForeground(new java.awt.Color(255, 255, 255));
-        New.setText("New Item Detials");
+        New.setText("New Item Details");
 
         item2.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         item2.setForeground(new java.awt.Color(255, 255, 255));
@@ -290,9 +292,8 @@ public class Modify extends javax.swing.JFrame {
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addComponent(item2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(itemsubcat2)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(itemcat2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(unit2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 78, Short.MAX_VALUE))))
+                                .addComponent(itemcat2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(unit2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                         .addGap(33, 33, 33)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(itemsubcat, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -423,35 +424,38 @@ public class Modify extends javax.swing.JFrame {
             Modifyunit = modifyunit.getText();
             Modifycat = modifycat.getText();
             Modifysub = modifysub.getText();
-
-            String sQuery = "UPDATE lookup_item "
-                    + "SET item = CASE WHEN '" + Modifyitem + "' <> '' THEN '" + Modifyitem + "' ELSE item END, "
-                    + "unit = CASE WHEN '" + Modifyunit + "' <> '' THEN '" + Modifyunit + "' ELSE unit END, "
-                    + "item_group = CASE WHEN '" + Modifycat + "' <> '' THEN '" + Modifycat + "' ELSE item_group END, "
-                    + "item_category = CASE WHEN '" + Modifysub + "' <> '' THEN '" + Modifysub + "' ELSE item_category END "
-                    + "WHERE item_code = '" + itemcode + "'";
-            try (Statement updateStatement = sqlconnection.createStatement()) {
-                int rowsUpdated = updateStatement.executeUpdate(sQuery);
-                if (rowsUpdated > 0) {
-                    showMessageDialog(null, "Item has been updated successfully!");
-                } else {
-                    showMessageDialog(null, "No items were updated.");
+            if ("".equals(Modifyitem) && "".equals(Modifyunit) && "".equals(Modifycat) && "".equals(Modifysub)) {
+                JOptionPane.showMessageDialog(new JFrame(), "At least update 1 detail", "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            } else {
+                String sQuery = "UPDATE lookup_item "
+                        + "SET item = CASE WHEN '" + Modifyitem + "' <> '' THEN '" + Modifyitem + "' ELSE item END, "
+                        + "unit = CASE WHEN '" + Modifyunit + "' <> '' THEN '" + Modifyunit + "' ELSE unit END, "
+                        + "item_group = CASE WHEN '" + Modifycat + "' <> '' THEN '" + Modifycat + "' ELSE item_group END, "
+                        + "item_category = CASE WHEN '" + Modifysub + "' <> '' THEN '" + Modifysub + "' ELSE item_category END "
+                        + "WHERE item_code = '" + itemcode + "'";
+                try ( Statement updateStatement = sqlconnection.createStatement()) {
+                    int rowsUpdated = updateStatement.executeUpdate(sQuery);
+                    if (rowsUpdated > 0) {
+                        showMessageDialog(null, "Item has been updated successfully!");
+                    } else {
+                        showMessageDialog(null, "No items were updated.");
+                    }
+                } catch (Exception e) {
+                    System.out.println("Error updating item: " + e.getMessage());
                 }
-            } catch (Exception e) {
-                System.out.println("Error updating item: " + e.getMessage());
+
+                modifyitem.setText("");
+                modifyunit.setText("");
+                modifycat.setText("");
+                modifysub.setText("");
+
+                Modify modifyFrame = new Modify(itemcode, item, unit, Username);
+                modifyFrame.setVisible(true);
+                modifyFrame.pack();
+                modifyFrame.setLocationRelativeTo(null);
+                this.dispose();
             }
-
-            modifyitem.setText("");
-            modifyunit.setText("");
-            modifycat.setText("");
-            modifysub.setText("");
-
-            Modify modifyFrame = new Modify(itemcode, item, unit, Username);
-            modifyFrame.setVisible(true);
-            modifyFrame.pack();
-            modifyFrame.setLocationRelativeTo(null);
-            this.dispose();
-
         } catch (SQLException e) {
             e.printStackTrace(); // Handle the exception appropriately
         }
