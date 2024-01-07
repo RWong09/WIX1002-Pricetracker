@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ViewTop extends javax.swing.JFrame {
 
@@ -24,7 +26,7 @@ public class ViewTop extends javax.swing.JFrame {
 //        System.out.println(item + " " + itemcode + " " + unit);
         USER.setText(Username);
 
-        java.util.List<Record> topSellersList = new java.util.ArrayList<>();
+        List<Record> topSellersList = new ArrayList<>();
 
         String url = "jdbc:mysql://localhost:3306/pricetracker";
         String user = "root";
@@ -63,8 +65,8 @@ public class ViewTop extends javax.swing.JFrame {
                     } while (TopSeller.next());
                     displayTopSellers(topSellersList);
                 } else {
-                cli.setText("There are no data available in this district");
-            }
+                    cli.setText("There are no data available in this district");
+                }
             }
 
         } catch (SQLException e) {
@@ -85,6 +87,31 @@ public class ViewTop extends javax.swing.JFrame {
             i++;
         }
         cli.setText(topSellerInfo.toString());
+    }
+
+    class Record {
+
+        private String premise;
+        private double price;
+        private String address;
+
+        public Record(String premise, double price, String address) {
+            this.premise = premise;
+            this.price = price;
+            this.address = address;
+        }
+
+        public String getPremise() {
+            return premise;
+        }
+
+        public double getPrice() {
+            return price;
+        }
+
+        public String getAddress() {
+            return address;
+        }
     }
 
     @SuppressWarnings("unchecked")
