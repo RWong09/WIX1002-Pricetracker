@@ -25,10 +25,10 @@ public class ShopCart extends javax.swing.JFrame {
 
     private String Username;
     static String district;
-    static double lastPrice=0;
+    static double lastPrice = 0;
     JFrame suggestFrame = new JFrame("Suggestion Window");
     JPanel suggestPanel = new JPanel();
-    private static JTextArea suggest = new JTextArea(); 
+    private static JTextArea suggest = new JTextArea();
     static List<Integer> premiseCodeInShopCart = new ArrayList<>();
     static List<Integer> itemCodeToBeSelected = new ArrayList<>();
     static List<Integer> item_count = new ArrayList<>();
@@ -37,7 +37,6 @@ public class ShopCart extends javax.swing.JFrame {
     static String url = "jdbc:mysql://localhost:3306/pricetracker";
     static String user = "root";
     static String password = "";
-    
 
     ShopCart(String Username) {
         initComponents();
@@ -401,7 +400,7 @@ public class ShopCart extends javax.swing.JFrame {
     }//GEN-LAST:event_HomeActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-  
+
         suggestFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         suggest.setEditable(false);
@@ -569,24 +568,39 @@ public class ShopCart extends javax.swing.JFrame {
     }
 
     private static void printSelectedSet() {
+        StringBuilder resultText = new StringBuilder();
         for (Map.Entry<Integer, Map<Integer, Double>> entry : selectedSet.entrySet()) {
             int premiseCode = entry.getKey();
             Map<Integer, Double> itemNPrice = entry.getValue();
-            suggest.setText("Premise Code: " + premiseCode+"\n");
-            suggest.setText("Item and Prices:\n");
+            resultText.append("\t\tPremise Code: ").append(premiseCode).append("\n");
+            resultText.append("\t\tItem and Prices:\n");
             for (Map.Entry<Integer, Double> itemEntry : itemNPrice.entrySet()) {
                 int itemCode = itemEntry.getKey();
+                int tempItemCode = itemCode;
+                int space = 0;
+                int counter = 0;
+                while (tempItemCode != 0) {
+                    tempItemCode /= 10;
+                    counter++;
+                }
+                switch (counter) {
+                    case 1 -> space = 15;
+                    case 2 -> space = 14;
+                    case 3 -> space = 13;
+                    case 4 -> space = 12;
+                    case 5 -> space = 11;
+                }
                 double price = itemEntry.getValue();
-                suggest.setText(String.format("Item Code: %-6d-Price: %-5.2f\n",itemCode, price));
+                resultText.append("\t\tItem Code:       ").append(itemCode).append(" ".repeat(space));
+                resultText.append(String.format("Price: %.2f\t\t\n",price));
                 lastPrice += price;
             }
-            suggest.setText("-------------------\n");
+            resultText.append("---".repeat(40) + "\n");
         }
-        suggest.setText(String.format("Total Price : %.2f\n" , lastPrice));
-    
+        resultText.append(String.format("Total Price : %.2f\n", lastPrice));
 
-    
-  
+        suggest.setText(resultText.toString());
+
     }//GEN-LAST:event_jButton3ActionPerformed
 
 
