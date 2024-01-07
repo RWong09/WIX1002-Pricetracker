@@ -3,6 +3,14 @@ package loginregister;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.YES_NO_OPTION;
@@ -11,15 +19,25 @@ import static javax.swing.JOptionPane.showConfirmDialog;
 import static javax.swing.JOptionPane.showMessageDialog;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
-import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
 public class ShopCart extends javax.swing.JFrame {
 
-    public ShopCart() {
-        initComponents();
-    }
     private String Username;
+    static String district;
+    static double lastPrice=0;
+    JFrame suggestFrame = new JFrame("Suggestion Window");
+    JPanel suggestPanel = new JPanel();
+    private static JTextArea suggest = new JTextArea(); 
+    static List<Integer> premiseCodeInShopCart = new ArrayList<>();
+    static List<Integer> itemCodeToBeSelected = new ArrayList<>();
+    static List<Integer> item_count = new ArrayList<>();
+    static Map<Integer, Map<Integer, Double>> premiseItemNPrice = new HashMap<>();
+    static Map<Integer, Map<Integer, Double>> selectedSet = new HashMap<>();
+    static String url = "jdbc:mysql://localhost:3306/pricetracker";
+    static String user = "root";
+    static String password = "";
+    
 
     ShopCart(String Username) {
         initComponents();
@@ -27,27 +45,23 @@ public class ShopCart extends javax.swing.JFrame {
         System.out.println(Username);
         USER.setText(Username);
         populateTableFromDatabase();
+
     }
 
     private void populateTableFromDatabase() {
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-        String url = "jdbc:mysql://localhost:3306/pricetracker";
-        String user = "root";
-        String password = "";
 
-        try ( Connection con = DriverManager.getConnection(url, user, password)) {
-            String query = "SELECT item, unit FROM shopping_cart WHERE username = ?"; // Modify query according to your table structure
-            PreparedStatement pstmt = con.prepareStatement(query);
-            pstmt.setString(1, Username);
-            ResultSet rs = pstmt.executeQuery();
+        try (Connection sqlconnection = DriverManager.getConnection(url, user, password)) {
+            String itemunitquery = "SELECT item, unit FROM shopping_cart WHERE username = '" + Username + "';";
+            Statement itemunitStatement = sqlconnection.createStatement();
+            ResultSet iu = itemunitStatement.executeQuery(itemunitquery);
 
-            while (rs.next()) {
-                String itemName = rs.getString("item");
-                String itemPrice = rs.getString("unit");
+            while (iu.next()) {
+                String itemName = iu.getString("item");
+                String itemPrice = iu.getString("unit");
                 model.addRow(new Object[]{itemName, itemPrice});
             }
 
-//            updateTotalPrice(); // Calculate and display total price after populating table
         } catch (SQLException e) {
             e.printStackTrace(); // Handle SQL exception
         }
@@ -325,9 +339,6 @@ public class ShopCart extends javax.swing.JFrame {
 
         if (selectedRowIndex != -1) {
             Object s = model.getValueAt(selectedRowIndex, jTable1.getSelectedColumn());
-            String url = "jdbc:mysql://localhost:3306/pricetracker";
-            String user = "root";
-            String password = "";
             try {
                 Connection sqlconnection = DriverManager.getConnection(url, user, password);
                 int Confirm = showConfirmDialog(null, "Do you sure want to remove this item?", "Confirm", YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
@@ -344,8 +355,7 @@ public class ShopCart extends javax.swing.JFrame {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-        }
-        else{
+        } else {
             showMessageDialog(null, "You does not select the item!", "", JOptionPane.WARNING_MESSAGE);
         }
     }//GEN-LAST:event_jButton2ActionPerformed
@@ -391,66 +401,194 @@ public class ShopCart extends javax.swing.JFrame {
     }//GEN-LAST:event_HomeActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        SwingUtilities.invokeLater(() -> {
-            JFrame suggestFrame = new JFrame("Suggestion Window");
-            suggestFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+  
+        suggestFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-            JPanel suggestPanel = new JPanel();
-            JTextArea suggest = new JTextArea();
-            suggest.setEditable(false);
-            suggest.setText("duwcdubx");
-            suggestPanel.add(suggest);
+        suggest.setEditable(false);
+        suggestPanel.add(suggest);
 
-            suggestFrame.add(suggestPanel);
-            suggest.setSize(600, 500);
-            suggestPanel.setSize(600, 500);
-            suggestFrame.setSize(600, 500);
+        suggestFrame.add(suggestPanel);
+        suggest.setSize(600, 500);
+        suggestPanel.setSize(600, 500);
+        suggestFrame.setSize(600, 500);
 
-            // Center the JFrame on the screen
-            Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-            int x = (screenSize.width - suggestFrame.getWidth()) / 2;
-            int y = (screenSize.height - suggestFrame.getHeight()) / 2;
-            suggestFrame.setLocation(x, y);
+        // Center the JFrame on the screen
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int x = (screenSize.width - suggestFrame.getWidth()) / 2;
+        int y = (screenSize.height - suggestFrame.getHeight()) / 2;
+        suggestFrame.setLocation(x, y);
 
-            suggestFrame.setVisible(true);
-        });
-
-    }//GEN-LAST:event_jButton3ActionPerformed
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
+        suggestFrame.setVisible(true);
         try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
+            Connection sqlconnection = DriverManager.getConnection(url, user, password);
+
+            String districtQuery = "SELECT district FROM user WHERE username = '" + Username + "' ";
+            Statement premiseCodeAvailableStatement = sqlconnection.createStatement();
+            ResultSet districtget = premiseCodeAvailableStatement.executeQuery(districtQuery);
+            while (districtget.next()) {
+                district = districtget.getString("district");
+            }
+
+            String premiseCodeAvailableQuery = "SELECT DISTINCT premise_code, COUNT(rankedpricetable.item_code) AS item_count "
+                    + "FROM rankedpricetable "
+                    + "JOIN shopping_cart ON shopping_cart.item_code = rankedpricetable.item_code "
+                    + "WHERE shopping_cart.username = '" + Username + "' "
+                    + "AND rankedpricetable.district ='" + district + "' "
+                    + "GROUP BY premise_code";
+
+            ResultSet premiseCodeAvailableResult = premiseCodeAvailableStatement.executeQuery(premiseCodeAvailableQuery);
+
+            while (premiseCodeAvailableResult.next()) {
+                premiseCodeInShopCart.add(premiseCodeAvailableResult.getInt("premise_code"));
+                item_count.add(premiseCodeAvailableResult.getInt("item_count"));
+            }
+
+            int availableProcessors = Runtime.getRuntime().availableProcessors();
+            ExecutorService executorService = Executors.newFixedThreadPool(availableProcessors);
+
+            List<Future<Map<Integer, Double>>> futures = new ArrayList<>();
+
+            for (int i = 0; i < premiseCodeInShopCart.size(); i++) {
+                int premiseCode = premiseCodeInShopCart.get(i);
+                Future<Map<Integer, Double>> future = executorService.submit(() -> createItemPrices(premiseCode));
+                futures.add(future);
+            }
+
+            for (int i = 0; i < premiseCodeInShopCart.size(); i++) {
+                try {
+                    Map<Integer, Double> itemNPrices = futures.get(i).get();
+                    premiseItemNPrice.put(premiseCodeInShopCart.get(i), itemNPrices);
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ShopCart.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ShopCart.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ShopCart.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ShopCart.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new ShopCart().setVisible(true);
+            String allItemquery = "SELECT item_code FROM shopping_cart WHERE username = '" + Username + "' ";
+            ResultSet queryResult = premiseCodeAvailableStatement.executeQuery(allItemquery);
+            while (queryResult.next()) {
+                itemCodeToBeSelected.add(queryResult.getInt("item_code"));
             }
-        });
+            while (!itemCodeToBeSelected.isEmpty()) {
+                selection();
+            }
+
+            printSelectedSet();
+            executorService.shutdown();
+            sqlconnection.close();
+        } catch (SQLException e) {
+            System.out.println("Error : " + e.getMessage());
+        }
     }
+
+    private static Map<Integer, Double> createItemPrices(int premiseCode) {
+        Map<Integer, Double> innerMap = new HashMap<>();
+        try {
+            Connection sqlconnection = DriverManager.getConnection(url, user, password);
+
+            String itemNPriceQuery = "SELECT shopping_cart.item_code AS itemcode, rankedpricetable.price AS Price "
+                    + "FROM rankedpricetable "
+                    + "JOIN shopping_cart ON shopping_cart.item_code = rankedpricetable.item_code "
+                    + "WHERE rankedpricetable.district = '" + district + "' "
+                    + "AND rankedpricetable.premise_code = ? ;";
+
+            PreparedStatement itemNPriceStatement = sqlconnection.prepareStatement(itemNPriceQuery);
+            itemNPriceStatement.setInt(1, premiseCode);
+
+            ResultSet itemNPriceResult = itemNPriceStatement.executeQuery();
+
+            while (itemNPriceResult.next()) {
+                int itemCodeFromRanked = itemNPriceResult.getInt("itemcode");
+                double price = itemNPriceResult.getDouble("Price");
+                innerMap.put(itemCodeFromRanked, price);
+            }
+
+            sqlconnection.close();
+        } catch (SQLException e) {
+            System.out.println("Error : " + e.getMessage());
+        }
+        return innerMap;
+    }
+
+    private static void selection() {
+        int maxInnerMapSize = 0;
+        Map<Integer, Double> maxInnerMap = null;
+        int selectedPremiseCode = 0;
+        List<Integer> keysToRemove = new ArrayList<>(); // New list to store keys to be removed
+
+        for (Map.Entry<Integer, Map<Integer, Double>> entry : premiseItemNPrice.entrySet()) {
+            int premiseCode = entry.getKey();
+            Map<Integer, Double> itemNPrice = entry.getValue();
+            int innerMapSize = itemNPrice.size();
+
+            if (innerMapSize > maxInnerMapSize) {
+                maxInnerMap = itemNPrice;
+                maxInnerMapSize = innerMapSize;
+                selectedPremiseCode = premiseCode;
+
+            } else if (innerMapSize == maxInnerMapSize) {
+                List<Integer> commonItems = new ArrayList<>(itemNPrice.keySet());
+                commonItems.retainAll(maxInnerMap.keySet());
+
+                if (compareInnerMapPrices(itemNPrice, commonItems) < compareInnerMapPrices(maxInnerMap, commonItems)) {
+                    maxInnerMap = itemNPrice;
+                    maxInnerMapSize = innerMapSize;
+                    selectedPremiseCode = premiseCode;
+
+                }
+            }
+        }
+
+        if (maxInnerMap != null) {
+            keysToRemove.addAll(maxInnerMap.keySet());
+            Map<Integer, Double> selectedInnerMap = new HashMap<>(maxInnerMap);
+            selectedSet.put(selectedPremiseCode, selectedInnerMap);
+            itemCodeToBeSelected.removeAll(keysToRemove);
+
+            for (Map<Integer, Double> itemNPrice : premiseItemNPrice.values()) {
+                for (Integer keyToRemove : keysToRemove) {
+                    itemNPrice.remove(keyToRemove);
+                }
+            }
+
+            keysToRemove.clear(); // Clear the list for the next iteration
+        }
+
+    }
+
+    private static double compareInnerMapPrices(Map<Integer, Double> itemPrices, List<Integer> commonItems) {
+        double totalInnerMapPrice = 0.0;
+
+        List<Integer> commonItemsCopy = new ArrayList<>(commonItems);
+
+        for (int itemCode : commonItemsCopy) {
+            if (itemPrices.containsKey(itemCode)) {
+                totalInnerMapPrice += itemPrices.get(itemCode);
+            }
+        }
+        return totalInnerMapPrice;
+    }
+
+    private static void printSelectedSet() {
+        for (Map.Entry<Integer, Map<Integer, Double>> entry : selectedSet.entrySet()) {
+            int premiseCode = entry.getKey();
+            Map<Integer, Double> itemNPrice = entry.getValue();
+            suggest.setText("Premise Code: " + premiseCode+"\n");
+            suggest.setText("Item and Prices:\n");
+            for (Map.Entry<Integer, Double> itemEntry : itemNPrice.entrySet()) {
+                int itemCode = itemEntry.getKey();
+                double price = itemEntry.getValue();
+                suggest.setText(String.format("Item Code: %-6d-Price: %-5.2f\n",itemCode, price));
+                lastPrice += price;
+            }
+            suggest.setText("-------------------\n");
+        }
+        suggest.setText(String.format("Total Price : %.2f\n" , lastPrice));
+    
+
+    
+  
+    }//GEN-LAST:event_jButton3ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Account;
