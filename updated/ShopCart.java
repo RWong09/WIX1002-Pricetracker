@@ -487,6 +487,7 @@ public class ShopCart extends javax.swing.JFrame {
             String itemNPriceQuery = "SELECT shopping_cart.item_code AS itemcode, rankedpricetable.price AS Price "
                     + "FROM rankedpricetable "
                     + "JOIN shopping_cart ON shopping_cart.item_code = rankedpricetable.item_code "
+                    + "WHERE shopping_cart.username = '" + Username + "' "
                     + "WHERE rankedpricetable.district = '" + district + "' "
                     + "AND rankedpricetable.premise_code = ? ;";
 
