@@ -1,4 +1,4 @@
-package loginregister;
+package PriceTracker;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -23,7 +23,7 @@ import javax.swing.table.DefaultTableModel;
 
 public class ShopCart extends javax.swing.JFrame {
 
-    private String Username;
+    private static String Username;
     static String district;
     static double lastPrice = 0;
     JFrame suggestFrame = new JFrame("Suggestion Window");
@@ -31,7 +31,9 @@ public class ShopCart extends javax.swing.JFrame {
     private static JTextArea suggest = new JTextArea();
     static List<Integer> premiseCodeInShopCart = new ArrayList<>();
     static List<Integer> itemCodeToBeSelected = new ArrayList<>();
+    static List<Integer> itemRepetition = new ArrayList<>();
     static List<Integer> item_count = new ArrayList<>();
+    static Map<Integer,Integer> priceMulti = new HashMap<>();
     static Map<Integer, Map<Integer, Double>> premiseItemNPrice = new HashMap<>();
     static Map<Integer, Map<Integer, Double>> selectedSet = new HashMap<>();
     static String url = "jdbc:mysql://localhost:3306/pricetracker";
@@ -130,8 +132,6 @@ public class ShopCart extends javax.swing.JFrame {
             }
         });
         jTable1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        jTable1.setShowHorizontalLines(false);
-        jTable1.setShowVerticalLines(false);
         jScrollPane1.setViewportView(jTable1);
         if (jTable1.getColumnModel().getColumnCount() > 0) {
             jTable1.getColumnModel().getColumn(0).setPreferredWidth(800);
@@ -154,8 +154,7 @@ public class ShopCart extends javax.swing.JFrame {
         USER.setText("jLabel1");
         USER.setPreferredSize(new java.awt.Dimension(37, 43));
 
-        BrowseByCat.setBackground(new java.awt.Color(255, 255, 255));
-        BrowseByCat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/loginregister/icons8-search-48.png"))); // NOI18N
+        BrowseByCat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/PriceTracker/icons8-search-48.png"))); // NOI18N
         BrowseByCat.setBorderPainted(false);
         BrowseByCat.setPreferredSize(new java.awt.Dimension(144, 43));
         BrowseByCat.addActionListener(new java.awt.event.ActionListener() {
@@ -164,8 +163,7 @@ public class ShopCart extends javax.swing.JFrame {
             }
         });
 
-        Shopping.setBackground(new java.awt.Color(255, 255, 255));
-        Shopping.setIcon(new javax.swing.ImageIcon(getClass().getResource("/loginregister/icons8-cart-48.png"))); // NOI18N
+        Shopping.setIcon(new javax.swing.ImageIcon(getClass().getResource("/PriceTracker/icons8-cart-48.png"))); // NOI18N
         Shopping.setBorderPainted(false);
         Shopping.setPreferredSize(new java.awt.Dimension(107, 43));
         Shopping.addActionListener(new java.awt.event.ActionListener() {
@@ -174,8 +172,7 @@ public class ShopCart extends javax.swing.JFrame {
             }
         });
 
-        Account.setBackground(new java.awt.Color(255, 255, 255));
-        Account.setIcon(new javax.swing.ImageIcon(getClass().getResource("/loginregister/icons8-setting-48.png"))); // NOI18N
+        Account.setIcon(new javax.swing.ImageIcon(getClass().getResource("/PriceTracker/icons8-setting-48.png"))); // NOI18N
         Account.setBorderPainted(false);
         Account.setPreferredSize(new java.awt.Dimension(114, 43));
         Account.addActionListener(new java.awt.event.ActionListener() {
@@ -184,7 +181,6 @@ public class ShopCart extends javax.swing.JFrame {
             }
         });
 
-        Logout.setBackground(new java.awt.Color(255, 255, 255));
         Logout.setText("Log Out");
         Logout.setBorderPainted(false);
         Logout.addActionListener(new java.awt.event.ActionListener() {
@@ -193,8 +189,7 @@ public class ShopCart extends javax.swing.JFrame {
             }
         });
 
-        Home.setBackground(new java.awt.Color(255, 255, 255));
-        Home.setIcon(new javax.swing.ImageIcon(getClass().getResource("/loginregister/icons8-home-48.png"))); // NOI18N
+        Home.setIcon(new javax.swing.ImageIcon(getClass().getResource("/PriceTracker/icons8-home-48.png"))); // NOI18N
         Home.setBorderPainted(false);
         Home.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -245,7 +240,7 @@ public class ShopCart extends javax.swing.JFrame {
             }
         });
 
-        jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/loginregister/A-removebg-preview (3).png"))); // NOI18N
+        jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/PriceTracker/A-removebg-preview (3).png"))); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -270,7 +265,7 @@ public class ShopCart extends javax.swing.JFrame {
                                     .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                        .addContainerGap(38, Short.MAX_VALUE))
+                        .addContainerGap(46, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -307,7 +302,7 @@ public class ShopCart extends javax.swing.JFrame {
                 .addGap(27, 27, 27))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(Menu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(0, 2, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -407,9 +402,9 @@ public class ShopCart extends javax.swing.JFrame {
         suggestPanel.add(suggest);
 
         suggestFrame.add(suggestPanel);
-        suggest.setSize(600, 500);
-        suggestPanel.setSize(600, 500);
-        suggestFrame.setSize(600, 500);
+        suggest.setSize(650, 300);
+        suggestPanel.setSize(650, 300);
+        suggestFrame.setSize(650, 300);
 
         // Center the JFrame on the screen
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -462,11 +457,17 @@ public class ShopCart extends javax.swing.JFrame {
                 }
             }
 
-            String allItemquery = "SELECT item_code FROM shopping_cart WHERE username = '" + Username + "' ";
+            String allItemquery = "SELECT DISTINCT item_code ,COUNT(item_code) AS itemRepetition FROM shopping_cart WHERE username =  '" + Username + "' "+
+                                   "GROUP BY item_code";
+          
             ResultSet queryResult = premiseCodeAvailableStatement.executeQuery(allItemquery);
             while (queryResult.next()) {
-                itemCodeToBeSelected.add(queryResult.getInt("item_code"));
+                int itemCode = queryResult.getInt("item_code");
+                itemCodeToBeSelected.add(itemCode);
+                priceMulti.put(itemCode, queryResult.getInt("itemRepetition"));
             }
+            
+            
             while (!itemCodeToBeSelected.isEmpty()) {
                 selection();
             }
@@ -477,6 +478,11 @@ public class ShopCart extends javax.swing.JFrame {
         } catch (SQLException e) {
             System.out.println("Error : " + e.getMessage());
         }
+        premiseCodeInShopCart.clear();
+        itemCodeToBeSelected.clear();
+        item_count.clear();
+        premiseItemNPrice.clear();
+        selectedSet.clear();
     }
 
     private static Map<Integer, Double> createItemPrices(int premiseCode) {
@@ -575,6 +581,7 @@ public class ShopCart extends javax.swing.JFrame {
             Map<Integer, Double> itemNPrice = entry.getValue();
             resultText.append("\t\tPremise Code: ").append(premiseCode).append("\n");
             resultText.append("\t\tItem and Prices:\n");
+            resultText.append("---".repeat(50) + "\n");
             for (Map.Entry<Integer, Double> itemEntry : itemNPrice.entrySet()) {
                 int itemCode = itemEntry.getKey();
                 int tempItemCode = itemCode;
@@ -585,21 +592,28 @@ public class ShopCart extends javax.swing.JFrame {
                     counter++;
                 }
                 switch (counter) {
-                    case 1 -> space = 15;
-                    case 2 -> space = 14;
-                    case 3 -> space = 13;
-                    case 4 -> space = 12;
-                    case 5 -> space = 11;
+                    case 1 ->
+                        space = 18;
+                    case 2 ->
+                        space = 16;
+                    case 3 ->
+                        space = 14;
+                    case 4 ->
+                        space = 12;
+                    case 5 ->
+                        space = 10;
                 }
                 double price = itemEntry.getValue();
-                resultText.append("\t\tItem Code:       ").append(itemCode).append(" ".repeat(space));
-                resultText.append(String.format("Price: %.2f\t\t\n",price));
-                lastPrice += price;
+                double secondPrice = price * (priceMulti.get(itemCode));
+                resultText.append("  Item Code:       ").append(itemCode).append(" ".repeat(space));
+                resultText.append(String.format("Item Price(Per Item): RM %.2f\t", price));
+                resultText.append("Quantity : ").append(priceMulti.get(itemCode)).append("\t\t\t\n");
+                lastPrice += secondPrice;
             }
-            resultText.append("---".repeat(40) + "\n");
+            resultText.append("---".repeat(50) + "\n");
         }
-        resultText.append(String.format("Total Price : %.2f\n", lastPrice));
-
+        resultText.append(String.format("Total Price : RM %.2f\n", lastPrice));
+        lastPrice = 0;
         suggest.setText(resultText.toString());
 
     }//GEN-LAST:event_jButton3ActionPerformed
