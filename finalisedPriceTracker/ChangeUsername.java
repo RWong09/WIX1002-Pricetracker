@@ -65,7 +65,7 @@ public class ChangeUsername extends javax.swing.JFrame {
         NewUser.setForeground(new java.awt.Color(29, 41, 81));
         NewUser.setText("New Username:");
 
-        Confirm.setForeground(new java.awt.Color(102, 204, 255));
+        Confirm.setForeground(new java.awt.Color(29, 41, 81));
         Confirm.setText("Confirm");
         Confirm.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -73,7 +73,7 @@ public class ChangeUsername extends javax.swing.JFrame {
             }
         });
 
-        Back.setForeground(new java.awt.Color(102, 204, 255));
+        Back.setForeground(new java.awt.Color(29, 41, 81));
         Back.setText("<< Back");
         Back.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
