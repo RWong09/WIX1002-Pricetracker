@@ -1,5 +1,9 @@
 package loginregister;
 
+import java.awt.Color;
+import java.awt.GradientPaint;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.sql.Statement;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -7,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.PreparedStatement;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.showMessageDialog;
+import javax.swing.JPanel;
 
 public class UserItem extends javax.swing.JFrame {
 
@@ -50,12 +55,27 @@ public class UserItem extends javax.swing.JFrame {
             Modify_Admin.setVisible(true);
         }
     }
+        class LoginRegister extends JPanel {
+        @Override
+        protected void paintComponent(Graphics g){
+            Graphics2D g2d = (Graphics2D) g;
+            int width = getWidth();
+            int height =getHeight();
+            
+            Color color1=new Color(219,215,210);
+            Color color2=new Color(176,196,222);
+            GradientPaint gp= new GradientPaint(0,0,color1,180,height,color2);
+            g2d.setPaint(gp);
+            g2d.fillRect(0,0,width,height);
+        }
+    }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
+        jPanel1 = new LoginRegister()
+        ;
         Welcome = new javax.swing.JLabel();
         ItemDetails = new javax.swing.JButton();
         Top5 = new javax.swing.JButton();
