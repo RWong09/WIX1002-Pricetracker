@@ -22,6 +22,7 @@ import static javax.swing.JOptionPane.YES_OPTION;
 import static javax.swing.JOptionPane.showConfirmDialog;
 import static javax.swing.JOptionPane.showMessageDialog;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.table.DefaultTableModel;
 
@@ -32,6 +33,7 @@ public class ShopCart extends javax.swing.JFrame {
     static double lastPrice = 0;
     JFrame suggestFrame = new JFrame("Suggestion Window");
     JPanel suggestPanel = new JPanel();
+    JScrollPane scrollPanel = new JScrollPane(suggest);
     private static JTextArea suggest = new JTextArea();
     static List<Integer> premiseCodeInShopCart = new ArrayList<>();
     static List<Integer> itemCodeToBeSelected = new ArrayList<>();
@@ -164,6 +166,7 @@ public class ShopCart extends javax.swing.JFrame {
         });
 
         Menu.setBackground(new java.awt.Color(255, 255, 255));
+        Menu.setForeground(new java.awt.Color(255, 255, 255));
 
         USER.setText("jLabel1");
         USER.setPreferredSize(new java.awt.Dimension(37, 43));
@@ -329,29 +332,34 @@ public class ShopCart extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-        int selectedRowIndex = jTable1.getSelectedRow();
+        int[] selectedRows = jTable1.getSelectedRows();
 
-        if (selectedRowIndex != -1) {
-            Object s = model.getValueAt(selectedRowIndex, jTable1.getSelectedColumn());
+        if (selectedRows.length > 0) {
             try {
                 Connection sqlconnection = DriverManager.getConnection(url, user, password);
                 int Confirm = showConfirmDialog(null, "Do you sure want to remove this item?", "Confirm", YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                int delete = 0;
                 if (Confirm == YES_OPTION) {
-                    String deletequery = "DELETE FROM shopping_cart WHERE `username` = '" + Username + "'" + "AND item ='" + s + "';";
-                    Statement deleteStatement = sqlconnection.createStatement();
-                    int delete = deleteStatement.executeUpdate(deletequery);
-                    if (delete > 0) {
-                        showMessageDialog(null, "Delete successfully", "", JOptionPane.PLAIN_MESSAGE);
+                    int selectedRowIndex = selectedRows[0];
+                    for (int i = 0; i < selectedRows.length; i++) {
+                        Object item = model.getValueAt(selectedRowIndex, jTable1.getSelectedColumn());
+                        String deleteQuery = "DELETE FROM shopping_cart WHERE `username` = '" + Username + "' AND item ='" + item + "' LIMIT 1;";
+                        Statement deleteStatement = sqlconnection.createStatement();
+                        delete += deleteStatement.executeUpdate(deleteQuery);
+                        model.removeRow(selectedRowIndex);
                     }
-                    model.removeRow(selectedRowIndex);
+                    if (delete > 0) {
+                        showMessageDialog(null, "Delete successfully " + delete + " item(s)", "Delete", JOptionPane.PLAIN_MESSAGE);
+                    }
                 }
 
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         } else {
-            showMessageDialog(null, "You does not select the item!", "", JOptionPane.WARNING_MESSAGE);
+            showMessageDialog(null, "You have not selected any items to remove!", "Remove Item", JOptionPane.WARNING_MESSAGE);
         }
+
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void BrowseByCatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BrowseByCatActionPerformed
@@ -399,12 +407,12 @@ public class ShopCart extends javax.swing.JFrame {
         suggestFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         suggest.setEditable(false);
-        suggestPanel.add(suggest);
-
-        suggestFrame.add(suggestPanel);
-        suggest.setSize(650, 300);
-        suggestPanel.setSize(650, 300);
-        suggestFrame.setSize(650, 300);
+        suggestFrame.add(scrollPanel);
+        
+        suggest.setSize(600, 600);
+        scrollPanel.setPreferredSize(new Dimension(600, 800));
+        suggestFrame.setSize(600, 600);
+        
 
         // Center the JFrame on the screen
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -516,7 +524,7 @@ public class ShopCart extends javax.swing.JFrame {
 
     private static void selection() {
         int maxInnerMapSize = 0;
-        Map<Integer, Double> maxInnerMap = null;
+        Map<Integer, Double> maxInnerMap = new HashMap<>();
         int selectedPremiseCode = 0;
         List<Integer> keysToRemove = new ArrayList<>(); // New list to store keys to be removed
 
@@ -533,7 +541,7 @@ public class ShopCart extends javax.swing.JFrame {
             } else if (innerMapSize == maxInnerMapSize) {
                 List<Integer> commonItems = new ArrayList<>(itemNPrice.keySet());
                 commonItems.retainAll(maxInnerMap.keySet());
-
+              
                 if (compareInnerMapPrices(itemNPrice, commonItems) < compareInnerMapPrices(maxInnerMap, commonItems)) {
                     maxInnerMap = itemNPrice;
                     maxInnerMapSize = innerMapSize;
@@ -591,8 +599,9 @@ public class ShopCart extends javax.swing.JFrame {
 
                 Map<Integer, Double> itemNPrice = entry.getValue();
                 resultText.append("Premise Code: ").append(premiseCode).append("\n");
-                resultText.append(premise).append("\n").append(address);
-                resultText.append("\nItem and Prices:\n");
+                resultText.append(premise).append("\n").append(address).append("\n");
+                resultText.append("---".repeat(50)).append("\n");
+                resultText.append("Item\t\tPrice\n");
                 resultText.append("---".repeat(50)).append("\n");
 
                 for (Map.Entry<Integer, Double> itemEntry : itemNPrice.entrySet()) {
@@ -604,7 +613,7 @@ public class ShopCart extends javax.swing.JFrame {
                     while (FinditemResult.next()) {
                         item = FinditemResult.getString("item");
                     }
-                    
+
                     int tempItemCode = itemCode;
                     int space = 0;
                     int counter = 0;
