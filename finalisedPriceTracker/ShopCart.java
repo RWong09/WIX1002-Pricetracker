@@ -56,7 +56,7 @@ public class ShopCart extends javax.swing.JFrame {
     }
 
     private void populateTableFromDatabase() {
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        DefaultTableModel model = (DefaultTableModel) ShopCartTable.getModel();
 
         try (Connection sqlconnection = DriverManager.getConnection(url, user, password)) {
             String itemunitquery = "SELECT item, unit FROM shopping_cart WHERE username = '" + Username + "';";
@@ -94,14 +94,13 @@ public class ShopCart extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel2 = new javax.swing.JLabel();
         jPanel1 = new PriceTracker();
-        jLabel1 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jLabel3 = new javax.swing.JLabel();
+        SHOPPINGCART = new javax.swing.JLabel();
+        Back = new javax.swing.JButton();
+        Welcome = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        jButton2 = new javax.swing.JButton();
+        ShopCartTable = new javax.swing.JTable();
+        Remove = new javax.swing.JButton();
         Menu = new javax.swing.JPanel();
         USER = new javax.swing.JLabel();
         BrowseByCat = new javax.swing.JButton();
@@ -109,33 +108,30 @@ public class ShopCart extends javax.swing.JFrame {
         Account = new javax.swing.JButton();
         Logout = new javax.swing.JButton();
         Home = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jLabel6 = new javax.swing.JLabel();
-
-        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jLabel2.setText("Welcome to Product Search and Selection");
+        Suggest = new javax.swing.JButton();
+        NewBie = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jPanel1.setBackground(new java.awt.Color(102, 204, 255));
         jPanel1.setPreferredSize(new java.awt.Dimension(1000, 500));
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(29, 41, 81));
-        jLabel1.setText("Shopping Cart");
+        SHOPPINGCART.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        SHOPPINGCART.setForeground(new java.awt.Color(29, 41, 81));
+        SHOPPINGCART.setText("Shopping Cart");
 
-        jButton1.setText("<< Back");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        Back.setText("<< Back");
+        Back.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                BackActionPerformed(evt);
             }
         });
 
-        jLabel3.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(29, 41, 81));
-        jLabel3.setText("Welcome to Product Search and Selection");
+        Welcome.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        Welcome.setForeground(new java.awt.Color(29, 41, 81));
+        Welcome.setText("Welcome to Product Search and Selection");
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        ShopCartTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -151,17 +147,17 @@ public class ShopCart extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        jTable1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        jScrollPane1.setViewportView(jTable1);
-        if (jTable1.getColumnModel().getColumnCount() > 0) {
-            jTable1.getColumnModel().getColumn(0).setPreferredWidth(800);
-            jTable1.getColumnModel().getColumn(1).setPreferredWidth(200);
+        ShopCartTable.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jScrollPane1.setViewportView(ShopCartTable);
+        if (ShopCartTable.getColumnModel().getColumnCount() > 0) {
+            ShopCartTable.getColumnModel().getColumn(0).setPreferredWidth(800);
+            ShopCartTable.getColumnModel().getColumn(1).setPreferredWidth(200);
         }
 
-        jButton2.setText("Remove");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        Remove.setText("Remove");
+        Remove.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                RemoveActionPerformed(evt);
             }
         });
 
@@ -207,6 +203,7 @@ public class ShopCart extends javax.swing.JFrame {
         });
 
         Home.setIcon(new javax.swing.ImageIcon(getClass().getResource("/PriceTracker/icons8-home-48.png"))); // NOI18N
+        Home.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         Home.setBorderPainted(false);
         Home.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -247,14 +244,14 @@ public class ShopCart extends javax.swing.JFrame {
                 .addGap(18, 18, 18))
         );
 
-        jButton3.setText("Suggest");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        Suggest.setText("Suggest");
+        Suggest.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                SuggestActionPerformed(evt);
             }
         });
 
-        jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/PriceTracker/A-removebg-preview (3).png"))); // NOI18N
+        NewBie.setIcon(new javax.swing.ImageIcon(getClass().getResource("/PriceTracker/A-removebg-preview (3).png"))); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -268,18 +265,18 @@ public class ShopCart extends javax.swing.JFrame {
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 755, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(15, 15, 15)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(Back, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(Remove, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(Suggest, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(NewBie, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addContainerGap(46, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(90, 90, 90)
-                                .addComponent(jLabel1))
-                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(SHOPPINGCART))
+                            .addComponent(Welcome, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(285, 285, 285))))
         );
         jPanel1Layout.setVerticalGroup(
@@ -288,20 +285,20 @@ public class ShopCart extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(Welcome, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel1)
+                        .addComponent(SHOPPINGCART)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 348, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jLabel6)
+                        .addComponent(NewBie)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton3)
+                        .addComponent(Suggest)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton2)
+                        .addComponent(Remove)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1)))
+                        .addComponent(Back)))
                 .addGap(55, 55, 55))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(Menu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -322,17 +319,17 @@ public class ShopCart extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void BackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackActionPerformed
         Home HomeFrame = new Home(Username);
         HomeFrame.setVisible(true);
         HomeFrame.pack();
         HomeFrame.setLocationRelativeTo(null);
         this.dispose();
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_BackActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-        int[] selectedRows = jTable1.getSelectedRows();
+    private void RemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RemoveActionPerformed
+        DefaultTableModel model = (DefaultTableModel) ShopCartTable.getModel();
+        int[] selectedRows = ShopCartTable.getSelectedRows();
 
         if (selectedRows.length > 0) {
             try {
@@ -342,7 +339,7 @@ public class ShopCart extends javax.swing.JFrame {
                 if (Confirm == YES_OPTION) {
                     int selectedRowIndex = selectedRows[0];
                     for (int i = 0; i < selectedRows.length; i++) {
-                        Object item = model.getValueAt(selectedRowIndex, jTable1.getSelectedColumn());
+                        Object item = model.getValueAt(selectedRowIndex, ShopCartTable.getSelectedColumn());
                         String deleteQuery = "DELETE FROM shopping_cart WHERE `username` = '" + Username + "' AND item ='" + item + "' LIMIT 1;";
                         Statement deleteStatement = sqlconnection.createStatement();
                         delete += deleteStatement.executeUpdate(deleteQuery);
@@ -360,7 +357,7 @@ public class ShopCart extends javax.swing.JFrame {
             showMessageDialog(null, "You have not selected any items to remove!", "Remove Item", JOptionPane.WARNING_MESSAGE);
         }
 
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_RemoveActionPerformed
 
     private void BrowseByCatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BrowseByCatActionPerformed
         Browser Bro = new Browser(Username);
@@ -402,7 +399,7 @@ public class ShopCart extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_HomeActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void SuggestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SuggestActionPerformed
 
         suggestFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
@@ -649,26 +646,25 @@ public class ShopCart extends javax.swing.JFrame {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_SuggestActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Account;
+    private javax.swing.JButton Back;
     private javax.swing.JButton BrowseByCat;
     private javax.swing.JButton Home;
     private javax.swing.JButton Logout;
     private javax.swing.JPanel Menu;
+    private javax.swing.JLabel NewBie;
+    private javax.swing.JButton Remove;
+    private javax.swing.JLabel SHOPPINGCART;
+    private javax.swing.JTable ShopCartTable;
     private javax.swing.JButton Shopping;
+    private javax.swing.JButton Suggest;
     private javax.swing.JLabel USER;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel Welcome;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
 }
