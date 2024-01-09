@@ -24,6 +24,7 @@ public class ChangeAdd extends javax.swing.JFrame {
     ChangeAdd(String Username) {
         this.Username = Username;
         initComponents();
+        Confirm.setEnabled(false);
     }
 
     class PriceTracker extends JPanel {
@@ -107,6 +108,11 @@ public class ChangeAdd extends javax.swing.JFrame {
 
         DISTRICT.setMinimumSize(new java.awt.Dimension(64, 22));
         DISTRICT.setPreferredSize(new java.awt.Dimension(64, 22));
+        DISTRICT.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DISTRICTActionPerformed(evt);
+            }
+        });
 
         State.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         State.setForeground(new java.awt.Color(29, 41, 81));
@@ -219,7 +225,7 @@ public class ChangeAdd extends javax.swing.JFrame {
                 String deletequery = "DELETE FROM shopping_cart WHERE `username` = '" + Username + "' ;";
                 Statement deleteStatement = sqlconnection.createStatement();
                 int delete = deleteStatement.executeUpdate(deletequery);
-                if (rowsUpdated > 0 && delete > 0) {
+                if (rowsUpdated > 0 || delete > 0) {
                     showMessageDialog(null, "Update successful\nShopping cart is clear now", "", JOptionPane.PLAIN_MESSAGE);
                 }
 
@@ -252,6 +258,10 @@ public class ChangeAdd extends javax.swing.JFrame {
             System.out.println("Error!" + e.getMessage());
         }
     }//GEN-LAST:event_STATEActionPerformed
+
+    private void DISTRICTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DISTRICTActionPerformed
+        Confirm.setEnabled(true);
+    }//GEN-LAST:event_DISTRICTActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Back;
